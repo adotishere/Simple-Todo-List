@@ -31,7 +31,7 @@ Controls can be changed under **Options > Controls > Key Binds > Simple Todo Lis
 
 1. Install Fabric Loader 0.19.3 or newer for Minecraft 26.1.2.
 2. Install Fabric API 0.155.2+26.1.2.
-3. Put `simple-todo-list-1.1.0.jar` in the Minecraft `mods` folder.
+3. Put `simple-todo-list-1.0.0.jar` in the Minecraft `mods` folder.
 
 This mod is client-side only and does not need to be installed on a server.
 
@@ -43,4 +43,4 @@ Minecraft 26.1.2 requires Java 25.
 ./gradlew build
 ```
 
-The finished mod will be in `build/libs/simple-todo-list-1.1.0.jar`.
+The finished mod will be in `build/libs/simple-todo-list-1.0.0.jar`.
