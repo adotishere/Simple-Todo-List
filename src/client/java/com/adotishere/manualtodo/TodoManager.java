@@ -12,7 +12,8 @@ import java.nio.file.StandardCopyOption;
 
 public final class TodoManager {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("manual-todo-list.json");
+    private static final Path CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("simple-todo-list.json");
+    private static final Path LEGACY_CONFIG_PATH = FabricLoader.getInstance().getConfigDir().resolve("manual-todo-list.json");
     private static TodoConfig config = TodoConfig.createDefault();
 
     private TodoManager() {
@@ -23,19 +24,26 @@ public final class TodoManager {
     }
 
     public static void load() {
-        if (!Files.exists(CONFIG_PATH)) {
+        Path path = Files.exists(CONFIG_PATH) ? CONFIG_PATH : (Files.exists(LEGACY_CONFIG_PATH) ? LEGACY_CONFIG_PATH : null);
+        if (path == null) {
             config = TodoConfig.createDefault();
             save();
             return;
         }
 
         try {
-            TodoConfig loaded = GSON.fromJson(Files.readString(CONFIG_PATH, StandardCharsets.UTF_8), TodoConfig.class);
+            TodoConfig loaded = GSON.fromJson(Files.readString(path, StandardCharsets.UTF_8), TodoConfig.class);
             config = loaded == null ? TodoConfig.createDefault() : loaded;
             config.normalize();
             save();
+            if (path.equals(LEGACY_CONFIG_PATH)) {
+                try {
+                    Files.deleteIfExists(LEGACY_CONFIG_PATH);
+                } catch (Exception ignored) {
+                }
+            }
         } catch (Exception exception) {
-            ManualTodoListClient.LOGGER.error("Could not read {}. Using default todo settings.", CONFIG_PATH, exception);
+            ManualTodoListClient.LOGGER.error("Could not read {}. Using default todo settings.", path, exception);
             config = TodoConfig.createDefault();
         }
     }

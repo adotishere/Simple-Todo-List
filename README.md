@@ -5,7 +5,7 @@ A client-side Fabric mod for Minecraft 26.1.2. It adds compact SkyHanni-inspired
 ## Features
 
 - Multiple independently positioned and scaled todo-list HUDs
-- Persistent lists and tasks stored in `config/manual-todo-list.json`
+- Persistent lists and tasks stored in `config/simple-todo-list.json`
 - Click task text to toggle completion; completed tasks turn green
 - Inline add/edit fields appear directly inside the selected task row
 - Optional per-task incremental goals with a current/goal counter and `-`/`+` controls
