@@ -20,6 +20,7 @@
   "screen.manual_todo_list.color.accent": "Accent",
   "screen.manual_todo_list.color.normal": "Task text",
   "screen.manual_todo_list.color.completed": "Completed",
+  "screen.manual_todo_list.color.incremental": "Incremental text",
   "screen.manual_todo_list.color.add": "Add / plus",
   "screen.manual_todo_list.color.edit": "Edit / minus",
   "screen.manual_todo_list.color.delete": "Delete",

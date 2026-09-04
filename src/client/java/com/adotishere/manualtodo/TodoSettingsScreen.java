@@ -42,7 +42,8 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
             ColorSlot.BACKGROUND,
             ColorSlot.ACCENT,
             ColorSlot.NORMAL_TASK,
-            ColorSlot.COMPLETED_TASK
+            ColorSlot.COMPLETED_TASK,
+            ColorSlot.INCREMENTAL_TEXT
     };
 
     public TodoSettingsScreen(@Nullable Screen parent) {
@@ -67,7 +68,7 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
         colorFields.clear();
         activePaletteSlot = null;
         panelWidth = Math.min(280, width - 20);
-        panelHeight = 216;
+        panelHeight = 240;
         panelX = (width - panelWidth) / 2;
         panelY = Math.max(10, (height - panelHeight) / 2);
 
@@ -83,15 +84,15 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
             }
         });
 
-        // Rows 1-4: Colors
+        // Rows 1-5: Colors
         for (int i = 0; i < SLOTS.length; i++) {
             addColorField(SLOTS[i], i + 1);
         }
 
-        // Row 5: Colored +/- Toggle
+        // Row 6: Colored +/- Toggle
         int toggleWidth = 52;
         int toggleX = panelX + panelWidth - toggleWidth - 18;
-        int toggleY = getRowY(5);
+        int toggleY = getRowY(SLOTS.length + 1);
         Button toggleBtn = Button.builder(
                 getColoredToggleText(TodoManager.config().coloredIncrementButtons),
                 button -> {
@@ -126,13 +127,13 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
         // Row 0: Opacity
         drawLabel(graphics, Component.translatable("screen.manual_todo_list.opacity_label"), 0, null, false);
 
-        // Rows 1-4: Colors
+        // Rows 1-5: Colors
         for (int i = 0; i < SLOTS.length; i++) {
             drawColorRow(graphics, SLOTS[i], i + 1, mouseX, mouseY);
         }
 
-        // Row 5: Colored +/- buttons
-        drawLabel(graphics, Component.translatable("screen.manual_todo_list.colored_increment_buttons"), 5, null, false);
+        // Row 6: Colored +/- buttons
+        drawLabel(graphics, Component.translatable("screen.manual_todo_list.colored_increment_buttons"), SLOTS.length + 1, null, false);
 
         if (!error.isEmpty()) {
             graphics.centeredText(font, error, width / 2, panelY + panelHeight - 40, TodoHud.opaque(theme.deleteButton));
@@ -362,6 +363,10 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
         COMPLETED_TASK("screen.manual_todo_list.color.completed") {
             int read(TodoTheme theme) { return theme.completedTask; }
             void write(TodoTheme theme, int value) { theme.completedTask = value; }
+        },
+        INCREMENTAL_TEXT("screen.manual_todo_list.color.incremental") {
+            int read(TodoTheme theme) { return theme.incrementalText; }
+            void write(TodoTheme theme, int value) { theme.incrementalText = value; }
         };
 
         private final String translationKey;

@@ -9,6 +9,7 @@ public final class TodoTheme {
     public int editButton = 0xFFA23A;
     public int deleteButton = 0xF87171;
     public int mutedText = 0x71717A;
+    public int incrementalText = 0x71717A;
 
     public void normalize() {
         background &= 0xFFFFFF;
@@ -19,5 +20,9 @@ public final class TodoTheme {
         editButton &= 0xFFFFFF;
         deleteButton &= 0xFFFFFF;
         mutedText &= 0xFFFFFF;
+        if (incrementalText == 0) {
+            incrementalText = mutedText != 0 ? mutedText : 0x71717A;
+        }
+        incrementalText &= 0xFFFFFF;
     }
 }
