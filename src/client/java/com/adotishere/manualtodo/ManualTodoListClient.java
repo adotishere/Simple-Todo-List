@@ -42,11 +42,11 @@ public final class ManualTodoListClient implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (settingsKey.consumeClick()) {
-                client.setScreen(new TodoSettingsScreen(client.screen));
+                client.setScreenAndShow(new TodoSettingsScreen(client.gui.screen()));
             }
             while (interactKey.consumeClick()) {
                 if (client.level != null) {
-                    client.setScreen(new TodoInteractionScreen());
+                    client.setScreenAndShow(new TodoInteractionScreen());
                 }
             }
         });
@@ -55,13 +55,13 @@ public final class ManualTodoListClient implements ClientModInitializer {
             dispatcher.register(ClientCommands.literal("todolist")
                     .executes(context -> {
                         Minecraft client = Minecraft.getInstance();
-                        client.execute(() -> client.setScreen(new TodoInteractionScreen()));
+                        client.execute(() -> client.setScreenAndShow(new TodoInteractionScreen()));
                         return 1;
                     })
                     .then(ClientCommands.literal("settings")
                             .executes(context -> {
                                 Minecraft client = Minecraft.getInstance();
-                                client.execute(() -> client.setScreen(new TodoSettingsScreen(null)));
+                                client.execute(() -> client.setScreenAndShow(new TodoSettingsScreen(null)));
                                 return 1;
                             }))
             );

@@ -271,7 +271,7 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
     public void onClose() {
         activePaletteSlot = null;
         save();
-        minecraft.setScreen(parent);
+        minecraft.setScreenAndShow(parent);
     }
 
     private EditBox makeField(int row, int maxLength, String value) {
@@ -318,7 +318,7 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
 
     private void saveAndClose() {
         if (save()) {
-            minecraft.setScreen(parent);
+            minecraft.setScreenAndShow(parent);
         }
     }
 

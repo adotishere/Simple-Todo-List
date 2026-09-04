@@ -556,7 +556,7 @@ public final class TodoInteractionScreen extends Screen implements TodoScreenMar
         draggingTaskIndex = -1;
         inlineEditor.cancel();
         TodoManager.save();
-        minecraft.setScreen(null);
+        minecraft.setScreenAndShow(null);
     }
 
     private void beginDragging(int listIndex, double mouseX, double mouseY) {

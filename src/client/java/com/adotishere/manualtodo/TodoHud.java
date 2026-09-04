@@ -17,9 +17,9 @@ public final class TodoHud {
 
     public static void extractHud(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.screen instanceof TodoScreenMarker
-                || minecraft.screen instanceof AbstractContainerScreen<?>
-                || minecraft.options.hideGui) {
+        if (minecraft.gui.screen() instanceof TodoScreenMarker
+                || minecraft.gui.screen() instanceof AbstractContainerScreen<?>
+                || minecraft.gui.hud.isHidden()) {
             return;
         }
         renderAll(graphics, -1, -1, Mode.HUD, null);
