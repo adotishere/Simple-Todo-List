@@ -37,6 +37,9 @@ public final class TodoConfig {
         if (theme.accent == 0x94A3B8) {
             theme.accent = 0x55B9FF;
         }
+        if (theme.incrementalText == 0x71717A) {
+            theme.incrementalText = 0xD4D4D8;
+        }
         theme.normalize();
         if (lists == null) {
             lists = new ArrayList<>();

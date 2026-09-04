@@ -116,7 +116,7 @@ public final class TodoHud {
         int completed = (int) list.tasks.stream().filter(task -> task.completed).count();
         String count = completed + "/" + list.tasks.size();
         int countRight = (mode == Mode.EDITOR) ? listWidth - 36 : listWidth - 7;
-        drawScaledText(graphics, font, count, countRight - Math.round(font.width(count) * list.fontScale), 7, opaque(theme.incrementalText), false, list.fontScale);
+        drawScaledText(graphics, font, count, countRight - Math.round(font.width(count) * list.fontScale), 7, opaque(theme.incrementalText), true, list.fontScale);
 
         // Header buttons: only in EDITOR mode (not in inventory or HUD)
         if (mode == Mode.EDITOR) {
@@ -171,7 +171,7 @@ public final class TodoHud {
                         if (progressHovered) {
                             graphics.fill(progressX - 2, rowY + 2, listWidth - 76, rowY + ROW_HEIGHT - 1, argb(0xFFFFFF, 25));
                         }
-                        drawScaledText(graphics, font, progress, progressX, rowY + 4, opaque(theme.incrementalText), false, list.fontScale);
+                        drawScaledText(graphics, font, progress, progressX, rowY + 4, opaque(theme.incrementalText), true, list.fontScale);
 
                         boolean minusHovered = inside(localMouseX, localMouseY, listWidth - 76, rowY + 1, listWidth - 64, rowY + ROW_HEIGHT);
                         boolean plusHovered = inside(localMouseX, localMouseY, listWidth - 64, rowY + 1, listWidth - 50, rowY + ROW_HEIGHT);
@@ -200,7 +200,7 @@ public final class TodoHud {
                         int maxTextWidth = Math.max(30, progressX - 24);
                         drawScaledText(graphics, font, abbreviate(font, task.text, Math.round(maxTextWidth / list.fontScale)), 19, rowY + 4, opaque(taskColor), true, list.fontScale);
 
-                        drawScaledText(graphics, font, progress, progressX, rowY + 4, opaque(theme.incrementalText), false, list.fontScale);
+                        drawScaledText(graphics, font, progress, progressX, rowY + 4, opaque(theme.incrementalText), true, list.fontScale);
 
                         if (mode == Mode.INVENTORY) {
                             boolean minusHovered = inside(localMouseX, localMouseY, listWidth - 30, rowY + 1, listWidth - 18, rowY + ROW_HEIGHT);
