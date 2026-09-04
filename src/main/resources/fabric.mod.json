@@ -1,0 +1,27 @@
+{
+	"schemaVersion": 1,
+	"id": "manual_todo_list",
+	"version": "${version}",
+	"name": "Simple Todo List",
+	"description": "A movable, scalable, client-side todo list HUD with in-game editing.",
+	"authors": [
+		"adotishere"
+	],
+	"icon": "assets/manual_todo_list/icon.png",
+	"license": "MIT",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.adotishere.manualtodo.ManualTodoListClient"
+		],
+		"modmenu": [
+			"com.adotishere.manualtodo.compat.ModMenuCompat"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}
