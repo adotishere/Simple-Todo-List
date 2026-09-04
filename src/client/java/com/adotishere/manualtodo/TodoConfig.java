@@ -6,6 +6,7 @@ import java.util.List;
 public final class TodoConfig {
     public int backgroundOpacityPercent = 68;
     public boolean hudsVisible = true;
+    public boolean coloredIncrementButtons = false;
     public TodoTheme theme = new TodoTheme();
     public List<TodoListData> lists = new ArrayList<>();
 
@@ -24,15 +25,14 @@ public final class TodoConfig {
         if (theme == null) {
             theme = new TodoTheme();
         }
-        if (theme.background == 0x0B1018 && theme.accent == 0x55B9FF) {
-            theme.background = 0x141517;
-            theme.accent = 0x94A3B8;
-            theme.normalTask = 0xE4E4E7;
-            theme.completedTask = 0x86EFAC;
-            theme.addButton = 0xD4D4D8;
-            theme.editButton = 0xA1A1AA;
-            theme.deleteButton = 0xF87171;
-            theme.mutedText = 0x71717A;
+        if (theme.addButton == 0xD4D4D8) {
+            theme.addButton = 0x75F09A;
+        }
+        if (theme.editButton == 0xA1A1AA) {
+            theme.editButton = 0xFFA23A;
+        }
+        if (theme.accent == 0x94A3B8) {
+            theme.accent = 0x55B9FF;
         }
         theme.normalize();
         if (lists == null) {

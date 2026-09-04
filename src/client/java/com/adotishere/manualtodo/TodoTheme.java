@@ -2,11 +2,11 @@ package com.adotishere.manualtodo;
 
 public final class TodoTheme {
     public int background = 0x141517;
-    public int accent = 0x94A3B8;
+    public int accent = 0x55B9FF;
     public int normalTask = 0xE4E4E7;
     public int completedTask = 0x86EFAC;
-    public int addButton = 0xD4D4D8;
-    public int editButton = 0xA1A1AA;
+    public int addButton = 0x75F09A;
+    public int editButton = 0xFFA23A;
     public int deleteButton = 0xF87171;
     public int mutedText = 0x71717A;
 

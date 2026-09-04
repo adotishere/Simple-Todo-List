@@ -149,7 +149,7 @@ public final class TodoHud {
                 }
 
                 if (editing) {
-                    drawInlineControls(graphics, font, rowY, editor.isIncremental(), theme, accent, listWidth);
+                    drawInlineControls(graphics, font, rowY, editor.isIncremental(), theme, accent, listWidth, config.coloredIncrementButtons);
                     continue;
                 }
 
@@ -159,6 +159,8 @@ public final class TodoHud {
                 if (task.incremental) {
                     String progress = task.progress + "/" + task.goal;
                     int progressWidth = Math.round(font.width(progress) * list.fontScale);
+                    int plusColor = config.coloredIncrementButtons ? opaque(theme.addButton) : 0xFFD4D4D8;
+                    int minusColor = config.coloredIncrementButtons ? opaque(theme.editButton) : 0xFFA1A1AA;
 
                     if (mode == Mode.EDITOR) {
                         int maxTextWidth = Math.max(30, listWidth - 142);
@@ -174,18 +176,18 @@ public final class TodoHud {
                         boolean minusHovered = inside(localMouseX, localMouseY, listWidth - 76, rowY + 1, listWidth - 64, rowY + ROW_HEIGHT);
                         boolean plusHovered = inside(localMouseX, localMouseY, listWidth - 64, rowY + 1, listWidth - 50, rowY + ROW_HEIGHT);
                         if (minusHovered) {
-                            graphics.fill(listWidth - 75, rowY + 2, listWidth - 65, rowY + ROW_HEIGHT - 1, argb(0xFFFFFF, 25));
+                            graphics.fill(listWidth - 75, rowY + 2, listWidth - 65, rowY + ROW_HEIGHT - 1, argb(minusColor, 35));
                         }
                         if (plusHovered) {
-                            graphics.fill(listWidth - 63, rowY + 2, listWidth - 51, rowY + ROW_HEIGHT - 1, argb(0xFFFFFF, 25));
+                            graphics.fill(listWidth - 63, rowY + 2, listWidth - 51, rowY + ROW_HEIGHT - 1, argb(plusColor, 35));
                         }
-                        graphics.text(font, "-", listWidth - 74, rowY + 4, opaque(theme.editButton), true);
-                        graphics.text(font, "+", listWidth - 62, rowY + 4, opaque(theme.addButton), true);
+                        graphics.text(font, "-", listWidth - 74, rowY + 4, minusColor, true);
+                        graphics.text(font, "+", listWidth - 62, rowY + 4, plusColor, true);
 
                         boolean pencilHovered = inside(localMouseX, localMouseY, listWidth - 50, rowY + 1, listWidth - 28, rowY + ROW_HEIGHT);
                         boolean delHovered = inside(localMouseX, localMouseY, listWidth - 28, rowY + 1, listWidth, rowY + ROW_HEIGHT);
                         if (pencilHovered) {
-                            graphics.fill(listWidth - 48, rowY + 2, listWidth - 32, rowY + ROW_HEIGHT - 1, argb(0xFFFFFF, 25));
+                            graphics.fill(listWidth - 48, rowY + 2, listWidth - 32, rowY + ROW_HEIGHT - 1, argb(theme.editButton, 35));
                         }
                         if (delHovered) {
                             graphics.fill(listWidth - 27, rowY + 2, listWidth - 2, rowY + ROW_HEIGHT - 1, argb(theme.deleteButton, 45));
@@ -204,14 +206,14 @@ public final class TodoHud {
                             boolean minusHovered = inside(localMouseX, localMouseY, listWidth - 30, rowY + 1, listWidth - 18, rowY + ROW_HEIGHT);
                             boolean plusHovered = inside(localMouseX, localMouseY, listWidth - 18, rowY + 1, listWidth - 4, rowY + ROW_HEIGHT);
                             if (minusHovered) {
-                                graphics.fill(listWidth - 29, rowY + 2, listWidth - 19, rowY + ROW_HEIGHT - 1, argb(0xFFFFFF, 25));
+                                graphics.fill(listWidth - 29, rowY + 2, listWidth - 19, rowY + ROW_HEIGHT - 1, argb(minusColor, 35));
                             }
                             if (plusHovered) {
-                                graphics.fill(listWidth - 17, rowY + 2, listWidth - 5, rowY + ROW_HEIGHT - 1, argb(0xFFFFFF, 25));
+                                graphics.fill(listWidth - 17, rowY + 2, listWidth - 5, rowY + ROW_HEIGHT - 1, argb(plusColor, 35));
                             }
                         }
-                        graphics.text(font, "-", listWidth - 26, rowY + 4, opaque(theme.editButton), true);
-                        graphics.text(font, "+", listWidth - 14, rowY + 4, opaque(theme.addButton), true);
+                        graphics.text(font, "-", listWidth - 26, rowY + 4, minusColor, true);
+                        graphics.text(font, "+", listWidth - 14, rowY + 4, plusColor, true);
                     }
                 } else {
                     int maxTextWidth = mode == Mode.EDITOR ? (listWidth - 54) : (listWidth - 24);
@@ -221,7 +223,7 @@ public final class TodoHud {
                         boolean pencilHovered = inside(localMouseX, localMouseY, listWidth - 50, rowY + 1, listWidth - 28, rowY + ROW_HEIGHT);
                         boolean delHovered = inside(localMouseX, localMouseY, listWidth - 28, rowY + 1, listWidth, rowY + ROW_HEIGHT);
                         if (pencilHovered) {
-                            graphics.fill(listWidth - 48, rowY + 2, listWidth - 32, rowY + ROW_HEIGHT - 1, argb(0xFFFFFF, 25));
+                            graphics.fill(listWidth - 48, rowY + 2, listWidth - 32, rowY + ROW_HEIGHT - 1, argb(theme.editButton, 35));
                         }
                         if (delHovered) {
                             graphics.fill(listWidth - 27, rowY + 2, listWidth - 2, rowY + ROW_HEIGHT - 1, argb(theme.deleteButton, 45));
@@ -237,7 +239,7 @@ public final class TodoHud {
         if (editor != null && editor.isAdding(listIndex)) {
             int addRowY = HEADER_HEIGHT + list.tasks.size() * ROW_HEIGHT;
             graphics.fill(5, addRowY + 1, listWidth - 5, addRowY + ROW_HEIGHT, argb(accent, 78));
-            drawInlineControls(graphics, font, addRowY, editor.isIncremental(), theme, accent, listWidth);
+            drawInlineControls(graphics, font, addRowY, editor.isIncremental(), theme, accent, listWidth, config.coloredIncrementButtons);
         }
 
         // Footer is positioned at bottom
@@ -252,10 +254,10 @@ public final class TodoHud {
                 graphics.fill(5, footerY + 2, 44, footerY + FOOTER_HEIGHT - 2, argb(theme.completedTask, 45));
             }
             if (resetHovered) {
-                graphics.fill(46, footerY + 2, 88, footerY + FOOTER_HEIGHT - 2, argb(0xFFFFFF, 25));
+                graphics.fill(46, footerY + 2, 88, footerY + FOOTER_HEIGHT - 2, argb(accent, 45));
             }
             graphics.text(font, "done", 8, footerY + 5, opaque(theme.completedTask), true);
-            graphics.text(font, "reset", 48, footerY + 5, opaque(theme.mutedText), true);
+            graphics.text(font, "reset", 48, footerY + 5, opaque(accent), true);
         }
 
         // Footer buttons in EDITOR mode (add+, done, reset)
@@ -264,17 +266,17 @@ public final class TodoHud {
             boolean doneHovered = inside(localMouseX, localMouseY, 46, footerY + 1, 84, footerY + FOOTER_HEIGHT);
             boolean resetHovered = inside(localMouseX, localMouseY, 86, footerY + 1, 128, footerY + FOOTER_HEIGHT);
             if (addHovered) {
-                graphics.fill(5, footerY + 2, 44, footerY + FOOTER_HEIGHT - 2, argb(0xFFFFFF, 35));
+                graphics.fill(5, footerY + 2, 44, footerY + FOOTER_HEIGHT - 2, argb(theme.addButton, 45));
             }
             if (doneHovered) {
                 graphics.fill(46, footerY + 2, 84, footerY + FOOTER_HEIGHT - 2, argb(theme.completedTask, 45));
             }
             if (resetHovered) {
-                graphics.fill(86, footerY + 2, 128, footerY + FOOTER_HEIGHT - 2, argb(0xFFFFFF, 25));
+                graphics.fill(86, footerY + 2, 128, footerY + FOOTER_HEIGHT - 2, argb(accent, 45));
             }
             graphics.text(font, "add+", 8, footerY + 5, opaque(theme.addButton), true);
             graphics.text(font, "done", 48, footerY + 5, opaque(theme.completedTask), true);
-            graphics.text(font, "reset", 88, footerY + 5, opaque(theme.mutedText), true);
+            graphics.text(font, "reset", 88, footerY + 5, opaque(accent), true);
         }
 
         int outlineColor = (list.hidden && mode == Mode.EDITOR) ? argb(accent, 140) : opaque(accent);
@@ -286,12 +288,14 @@ public final class TodoHud {
         graphics.pose().popMatrix();
     }
 
-    private static void drawInlineControls(GuiGraphicsExtractor graphics, Font font, int rowY, boolean incremental, TodoTheme theme, int accent, int listWidth) {
+    private static void drawInlineControls(GuiGraphicsExtractor graphics, Font font, int rowY, boolean incremental, TodoTheme theme, int accent, int listWidth, boolean coloredIncrement) {
+        int plusColor = coloredIncrement ? opaque(theme.addButton) : 0xFFD4D4D8;
+        int minusColor = coloredIncrement ? opaque(theme.editButton) : 0xFFA1A1AA;
         if (incremental) {
-            graphics.text(font, "-", listWidth - 78, rowY + 4, opaque(theme.editButton), true);
-            graphics.text(font, "+", listWidth - 66, rowY + 4, opaque(theme.addButton), true);
+            graphics.text(font, "-", listWidth - 78, rowY + 4, minusColor, true);
+            graphics.text(font, "+", listWidth - 66, rowY + 4, plusColor, true);
         } else {
-            graphics.text(font, "+", listWidth - 36, rowY + 4, opaque(theme.addButton), true);
+            graphics.text(font, "+", listWidth - 36, rowY + 4, plusColor, true);
         }
         graphics.text(font, "ok", listWidth - 19, rowY + 4, opaque(theme.addButton), true);
     }

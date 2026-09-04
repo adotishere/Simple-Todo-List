@@ -67,7 +67,7 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
         colorFields.clear();
         activePaletteSlot = null;
         panelWidth = Math.min(280, width - 20);
-        panelHeight = 192;
+        panelHeight = 216;
         panelX = (width - panelWidth) / 2;
         panelY = Math.max(10, (height - panelHeight) / 2);
 
@@ -88,9 +88,27 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
             addColorField(SLOTS[i], i + 1);
         }
 
+        // Row 5: Colored +/- Toggle
+        int toggleWidth = 52;
+        int toggleX = panelX + panelWidth - toggleWidth - 18;
+        int toggleY = getRowY(5);
+        Button toggleBtn = Button.builder(
+                getColoredToggleText(TodoManager.config().coloredIncrementButtons),
+                button -> {
+                    TodoConfig cfg = TodoManager.config();
+                    cfg.coloredIncrementButtons = !cfg.coloredIncrementButtons;
+                    button.setMessage(getColoredToggleText(cfg.coloredIncrementButtons));
+                }
+        ).bounds(toggleX, toggleY, toggleWidth, FIELD_HEIGHT).build();
+        addRenderableWidget(toggleBtn);
+
         addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> saveAndClose())
                 .bounds(panelX + panelWidth / 2 - 50, panelY + panelHeight - 26, 100, 18)
                 .build());
+    }
+
+    private static Component getColoredToggleText(boolean enabled) {
+        return Component.translatable(enabled ? "screen.manual_todo_list.colored_buttons_on" : "screen.manual_todo_list.colored_buttons_off");
     }
 
     @Override
@@ -112,6 +130,9 @@ public final class TodoSettingsScreen extends Screen implements TodoScreenMarker
         for (int i = 0; i < SLOTS.length; i++) {
             drawColorRow(graphics, SLOTS[i], i + 1, mouseX, mouseY);
         }
+
+        // Row 5: Colored +/- buttons
+        drawLabel(graphics, Component.translatable("screen.manual_todo_list.colored_increment_buttons"), 5, null, false);
 
         if (!error.isEmpty()) {
             graphics.centeredText(font, error, width / 2, panelY + panelHeight - 40, TodoHud.opaque(theme.deleteButton));

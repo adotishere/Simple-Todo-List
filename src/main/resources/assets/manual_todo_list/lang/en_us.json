@@ -23,5 +23,8 @@
   "screen.manual_todo_list.color.add": "Add / plus",
   "screen.manual_todo_list.color.edit": "Edit / minus",
   "screen.manual_todo_list.color.delete": "Delete",
-  "screen.manual_todo_list.color.muted": "Muted text"
+  "screen.manual_todo_list.color.muted": "Muted text",
+  "screen.manual_todo_list.colored_increment_buttons": "Colored +/- buttons",
+  "screen.manual_todo_list.colored_buttons_on": "ON",
+  "screen.manual_todo_list.colored_buttons_off": "OFF"
 }
