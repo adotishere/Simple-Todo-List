@@ -13,6 +13,10 @@ public final class TodoInteractionScreen extends Screen implements TodoScreenMar
     private double dragOffsetX;
     private double dragOffsetY;
 
+    // Drag task reordering state
+    private int draggingTaskList = -1;
+    private int draggingTaskIndex = -1;
+
     // Resizing state
     private TodoHud.ResizeEdge resizingEdge = TodoHud.ResizeEdge.NONE;
     private int resizingList = -1;
@@ -45,6 +49,8 @@ public final class TodoInteractionScreen extends Screen implements TodoScreenMar
         }
         closeIncrementEditor();
         colorPickerList = -1;
+        draggingTaskList = -1;
+        draggingTaskIndex = -1;
     }
 
     @Override
@@ -55,7 +61,7 @@ public final class TodoInteractionScreen extends Screen implements TodoScreenMar
     @Override
     public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         inlineEditor.relayout();
-        TodoHud.renderAll(graphics, mouseX, mouseY, TodoHud.Mode.EDITOR, inlineEditor);
+        TodoHud.renderAll(graphics, mouseX, mouseY, TodoHud.Mode.EDITOR, inlineEditor, draggingTaskList, draggingTaskIndex);
         TodoTheme theme = TodoManager.config().theme;
         graphics.centeredText(font, Component.translatable("screen.manual_todo_list.editor.hint"),
                 width / 2, 10, TodoHud.opaque(theme.normalTask));
@@ -272,6 +278,14 @@ public final class TodoInteractionScreen extends Screen implements TodoScreenMar
         }
 
         switch (target.action()) {
+            case DRAG_TASK -> {
+                draggingTaskList = target.listIndex();
+                draggingTaskIndex = target.taskIndex();
+                closeIncrementEditor();
+                if (inlineEditor != null && inlineEditor.isActive()) {
+                    inlineEditor.cancel();
+                }
+            }
             case TOGGLE_TASK -> TodoManager.toggleTask(target.listIndex(), target.taskIndex());
             case EDIT_TASK -> inlineEditor.start(target.listIndex(), target.taskIndex());
             case DELETE_TASK -> TodoManager.removeTask(target.listIndex(), target.taskIndex());
@@ -448,6 +462,22 @@ public final class TodoInteractionScreen extends Screen implements TodoScreenMar
             return true;
         }
 
+        if (draggingTaskList >= 0 && event.button() == 0) {
+            TodoListData list = TodoManager.list(draggingTaskList);
+            if (list != null && draggingTaskIndex >= 0 && draggingTaskIndex < list.tasks.size()) {
+                TodoHud.Layout layout = TodoHud.layout(draggingTaskList, width, height);
+                double localY = (event.y() - layout.y()) / layout.scale();
+                int targetIndex = (int) Math.floor((localY - TodoHud.HEADER_HEIGHT) / TodoHud.ROW_HEIGHT);
+                targetIndex = Math.clamp(targetIndex, 0, list.tasks.size() - 1);
+                if (targetIndex != draggingTaskIndex) {
+                    TodoTask task = list.tasks.remove(draggingTaskIndex);
+                    list.tasks.add(targetIndex, task);
+                    draggingTaskIndex = targetIndex;
+                }
+            }
+            return true;
+        }
+
         if (draggingList >= 0 && event.button() == 0) {
             TodoHud.moveToPixels(draggingList, event.x() - dragOffsetX, event.y() - dragOffsetY, width, height);
             return true;
@@ -457,6 +487,12 @@ public final class TodoInteractionScreen extends Screen implements TodoScreenMar
 
     @Override
     public boolean mouseReleased(MouseButtonEvent event) {
+        if (draggingTaskList >= 0 && event.button() == 0) {
+            draggingTaskList = -1;
+            draggingTaskIndex = -1;
+            TodoManager.save();
+            return true;
+        }
         if (resizingList >= 0 && event.button() == 0) {
             resizingList = -1;
             resizingEdge = TodoHud.ResizeEdge.NONE;
@@ -516,6 +552,8 @@ public final class TodoInteractionScreen extends Screen implements TodoScreenMar
     public void onClose() {
         closeIncrementEditor();
         colorPickerList = -1;
+        draggingTaskList = -1;
+        draggingTaskIndex = -1;
         inlineEditor.cancel();
         TodoManager.save();
         minecraft.setScreen(null);

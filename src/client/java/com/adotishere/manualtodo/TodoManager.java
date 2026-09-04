@@ -102,6 +102,16 @@ public final class TodoManager {
         }
     }
 
+    public static void moveTask(int listIndex, int fromIndex, int toIndex) {
+        TodoListData list = list(listIndex);
+        if (list == null || fromIndex < 0 || fromIndex >= list.tasks.size() || toIndex < 0 || toIndex >= list.tasks.size() || fromIndex == toIndex) {
+            return;
+        }
+        TodoTask task = list.tasks.remove(fromIndex);
+        list.tasks.add(toIndex, task);
+        save();
+    }
+
     public static void toggleTask(int listIndex, int taskIndex) {
         TodoTask task = task(listIndex, taskIndex);
         if (task != null) {

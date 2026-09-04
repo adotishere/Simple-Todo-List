@@ -52,6 +52,18 @@ public final class TodoHud {
             Mode mode,
             TodoInlineEditor editor
     ) {
+        renderAll(graphics, mouseX, mouseY, mode, editor, -1, -1);
+    }
+
+    public static void renderAll(
+            GuiGraphicsExtractor graphics,
+            int mouseX,
+            int mouseY,
+            Mode mode,
+            TodoInlineEditor editor,
+            int draggedListIndex,
+            int draggedTaskIndex
+    ) {
         TodoConfig config = TodoManager.config();
         if (!config.hudsVisible && mode != Mode.EDITOR) {
             return;
@@ -61,7 +73,7 @@ public final class TodoHud {
             if (list != null && list.hidden && mode != Mode.EDITOR) {
                 continue;
             }
-            renderList(graphics, listIndex, mouseX, mouseY, mode, editor);
+            renderList(graphics, listIndex, mouseX, mouseY, mode, editor, draggedListIndex, draggedTaskIndex);
         }
     }
 
@@ -71,7 +83,9 @@ public final class TodoHud {
             int mouseX,
             int mouseY,
             Mode mode,
-            TodoInlineEditor editor
+            TodoInlineEditor editor,
+            int draggedListIndex,
+            int draggedTaskIndex
     ) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
@@ -143,8 +157,12 @@ public final class TodoHud {
                 TodoTask task = list.tasks.get(taskIndex);
                 int rowY = HEADER_HEIGHT + taskIndex * ROW_HEIGHT;
                 boolean editing = editor != null && editor.isEditing(listIndex, taskIndex);
+                boolean isBeingDragged = (listIndex == draggedListIndex && taskIndex == draggedTaskIndex);
                 boolean rowHovered = (mode == Mode.EDITOR) && inside(localMouseX, localMouseY, 5, rowY + 1, listWidth - 5, rowY + ROW_HEIGHT);
-                if (rowHovered || editing) {
+                if (isBeingDragged) {
+                    graphics.fill(5, rowY + 1, listWidth - 5, rowY + ROW_HEIGHT, argb(accent, 85));
+                    graphics.outline(5, rowY + 1, listWidth - 10, ROW_HEIGHT - 1, opaque(accent));
+                } else if (rowHovered || editing) {
                     graphics.fill(5, rowY + 1, listWidth - 5, rowY + ROW_HEIGHT, argb(0xFFFFFF, editing ? 35 : 18));
                 }
 
@@ -156,6 +174,16 @@ public final class TodoHud {
                 int taskColor = task.completed ? theme.completedTask : theme.normalTask;
                 drawSquare(graphics, 8, rowY + 5, taskColor, task.completed);
 
+                int textStartX = 19;
+                if (mode == Mode.EDITOR) {
+                    boolean gripHovered = inside(localMouseX, localMouseY, 16, rowY + 1, 26, rowY + ROW_HEIGHT);
+                    if (gripHovered || isBeingDragged) {
+                        graphics.fill(16, rowY + 2, 26, rowY + ROW_HEIGHT - 1, argb(0xFFFFFF, 35));
+                    }
+                    drawGripIcon(graphics, 18, rowY + 5, (isBeingDragged || gripHovered) ? 0xFFFFFF : theme.mutedText);
+                    textStartX = 28;
+                }
+
                 if (task.incremental) {
                     String progress = task.progress + "/" + task.goal;
                     int progressWidth = Math.round(font.width(progress) * list.fontScale);
@@ -163,8 +191,8 @@ public final class TodoHud {
                     int minusColor = config.coloredIncrementButtons ? opaque(theme.editButton) : 0xFFA1A1AA;
 
                     if (mode == Mode.EDITOR) {
-                        int maxTextWidth = Math.max(30, listWidth - 142);
-                        drawScaledText(graphics, font, abbreviate(font, task.text, Math.round(maxTextWidth / list.fontScale)), 19, rowY + 4, opaque(taskColor), true, list.fontScale);
+                        int maxTextWidth = Math.max(30, listWidth - 151);
+                        drawScaledText(graphics, font, abbreviate(font, task.text, Math.round(maxTextWidth / list.fontScale)), textStartX, rowY + 4, opaque(taskColor), true, list.fontScale);
 
                         int progressX = (listWidth - 78) - progressWidth;
                         boolean progressHovered = inside(localMouseX, localMouseY, progressX - 2, rowY + 1, listWidth - 76, rowY + ROW_HEIGHT);
@@ -216,8 +244,8 @@ public final class TodoHud {
                         graphics.text(font, "+", listWidth - 14, rowY + 4, plusColor, true);
                     }
                 } else {
-                    int maxTextWidth = mode == Mode.EDITOR ? (listWidth - 54) : (listWidth - 24);
-                    drawScaledText(graphics, font, abbreviate(font, task.text, Math.round(maxTextWidth / list.fontScale)), 19, rowY + 4, opaque(taskColor), true, list.fontScale);
+                    int maxTextWidth = mode == Mode.EDITOR ? Math.max(30, listWidth - 63) : Math.max(30, listWidth - 24);
+                    drawScaledText(graphics, font, abbreviate(font, task.text, Math.round(maxTextWidth / list.fontScale)), textStartX, rowY + 4, opaque(taskColor), true, list.fontScale);
 
                     if (mode == Mode.EDITOR) {
                         boolean pencilHovered = inside(localMouseX, localMouseY, listWidth - 50, rowY + 1, listWidth - 28, rowY + ROW_HEIGHT);
@@ -409,6 +437,10 @@ public final class TodoHud {
                     return new HitTarget(Action.BLOCK, listIndex, taskIndex);
                 }
 
+                if (mode == Mode.EDITOR && inside(x, y, 16, rowY + 1, 26, rowY + ROW_HEIGHT)) {
+                    return new HitTarget(Action.DRAG_TASK, listIndex, taskIndex);
+                }
+
                 int progressEndX = listWidth - 78;
                 if (task.incremental && inside(x, y, progressEndX - 42, rowY + 1, progressEndX, rowY + ROW_HEIGHT)) {
                     return new HitTarget(Action.EDIT_INCREMENT, listIndex, taskIndex);
@@ -582,6 +614,13 @@ public final class TodoHud {
         }
     }
 
+    private static void drawGripIcon(GuiGraphicsExtractor graphics, int x, int y, int rgb) {
+        int color = opaque(rgb);
+        graphics.fill(x, y, x + 7, y + 1, color);
+        graphics.fill(x, y + 2, x + 7, y + 3, color);
+        graphics.fill(x, y + 4, x + 7, y + 5, color);
+    }
+
     private static void drawPencil(GuiGraphicsExtractor graphics, int x, int y, int rgb) {
         int color = opaque(rgb);
         graphics.fill(x + 2, y + 7, x + 4, y + 9, color);
@@ -632,6 +671,7 @@ public final class TodoHud {
         NONE,
         BLOCK,
         TOGGLE_TASK,
+        DRAG_TASK,
         EDIT_TASK,
         DELETE_TASK,
         DECREMENT,
