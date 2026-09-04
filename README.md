@@ -1,6 +1,6 @@
 # Simple Todo List
 
-A client-side Fabric mod for Minecraft 26.1.2. It adds compact todo lists to the HUD.
+A client-side Fabric mod for Minecraft. It adds compact todo lists to the HUD.
 
 ## Features
 
@@ -29,18 +29,18 @@ Controls can be changed under **Options > Controls > Key Binds > Simple Todo Lis
 
 ## Installation
 
-1. Install Fabric Loader 0.19.3 or newer for Minecraft 26.1.2.
-2. Install Fabric API 0.155.2+26.1.2.
-3. Put `simple-todo-list-1.0.0.jar` in the Minecraft `mods` folder.
+1. Install Fabric Loader (0.19.3 or newer) for your Minecraft version.
+2. Install the matching version of Fabric API.
+3. Download the release `.jar` for your Minecraft version from the [Releases](https://github.com/adotishere/Simple-Todo-List/releases) page and place it in your Minecraft `mods` folder.
 
 This mod is client-side only and does not need to be installed on a server.
 
 ## Building
 
-Minecraft 26.1.2 requires Java 25.
+Building requires Java 25.
 
 ```bash
 ./gradlew build
 ```
 
-The finished mod will be in `build/libs/simple-todo-list-1.0.0.jar`.
+The finished mod will be in `build/libs/`.
