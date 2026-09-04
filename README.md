@@ -1,6 +1,6 @@
 # Simple Todo List
 
-A client-side Fabric mod for Minecraft 26.1.2. It adds compact SkyHanni-inspired todo lists to the HUD.
+A client-side Fabric mod for Minecraft 26.1.2. It adds compact todo lists to the HUD.
 
 ## Features
 
