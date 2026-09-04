@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class TodoConfig {
-    public int backgroundOpacityPercent = 68;
+    public int backgroundOpacityPercent = 50;
     public boolean hudsVisible = true;
     public boolean coloredIncrementButtons = false;
     public TodoTheme theme = new TodoTheme();
@@ -21,6 +21,9 @@ public final class TodoConfig {
     }
 
     public void normalize() {
+        if (backgroundOpacityPercent == 68) {
+            backgroundOpacityPercent = 50;
+        }
         backgroundOpacityPercent = Math.max(0, Math.min(100, backgroundOpacityPercent));
         if (theme == null) {
             theme = new TodoTheme();
